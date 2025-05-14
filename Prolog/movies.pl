@@ -1,6 +1,6 @@
 /* Prolog Movie Recommendation System */
 
-% movie(Title, Genre, Rating (1–5), Year, Director)
+% ----- Movie Facts -----
 movie('Inception', sci_fi, 5, 2010, 'Christopher Nolan').
 movie('Interstellar', sci_fi, 5, 2014, 'Christopher Nolan').
 movie('The Dark Knight', action, 5, 2008, 'Christopher Nolan').
@@ -29,33 +29,44 @@ movie('Coco', animation, 5, 2017, 'Lee Unkrich').
 
 % ----- Rules -----
 
-% Find movies by genre
 movies_by_genre(Genre, List) :-
     findall(Title, movie(Title, Genre, _, _, _), List).
 
-% Find movies with minimum rating
 movies_by_rating(MinRating, List) :-
     findall(Title, (movie(Title, _, Rating, _, _), Rating >= MinRating), List).
 
-% Find movies by director
 movies_by_director(Director, List) :-
     findall(Title, movie(Title, _, _, _, Director), List).
 
-% Find movies released after a given year
 movies_after_year(Year, List) :-
     findall(Title, (movie(Title, _, _, Y, _), Y > Year), List).
 
-% Top-rated movies of a specific genre
 top_rated_by_genre(Genre, List) :-
     findall(Title, (movie(Title, Genre, 5, _, _)), List).
 
-% ----- Sample Queries -----
-% ?- movies_by_genre(horror, List).
-% ?- movies_by_rating(5, List).
-% ?- movies_by_director('Christopher Nolan', List).
-% ?- movies_after_year(2010, List).
-% ?- top_rated_by_genre(animation, List).
+% ----- Display Predicates -----
 
+show_movies_by_genre(Genre) :-
+    movies_by_genre(Genre, List),
+    format("Movies in genre ~w: ~w~n", [Genre, List]).
+
+show_movies_by_rating(Rating) :-
+    movies_by_rating(Rating, List),
+    format("Movies with rating >= ~w: ~w~n", [Rating, List]).
+
+show_movies_by_director(Director) :-
+    movies_by_director(Director, List),
+    format("Movies directed by ~w: ~w~n", [Director, List]).
+
+show_movies_after_year(Year) :-
+    movies_after_year(Year, List),
+    format("Movies released after ~w: ~w~n", [Year, List]).
+
+show_top_rated_by_genre(Genre) :-
+    top_rated_by_genre(Genre, List),
+    format("Top-rated movies in genre ~w: ~w~n", [Genre, List]).
+
+% ----- Auto-run on SWI-Prolog -----
 
 :- initialization(run).
 
