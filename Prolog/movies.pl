@@ -55,3 +55,13 @@ top_rated_by_genre(Genre, List) :-
 % ?- movies_by_director('Christopher Nolan', List).
 % ?- movies_after_year(2010, List).
 % ?- top_rated_by_genre(animation, List).
+
+
+:- initialization(run).
+
+run :-
+    show_movies_by_genre(horror),
+    show_movies_by_rating(5),
+    show_movies_by_director('Christopher Nolan'),
+    show_movies_after_year(2010),
+    show_top_rated_by_genre(animation).
