@@ -1,4 +1,3 @@
-;;; ------------------------------
 ;;; Part I: Bubble sort with +1 for odd numbers
 ;;; ------------------------------
 
@@ -28,10 +27,8 @@
 
 (run-part1)
 
-;;; ------------------------------
 ;;; Part II: Merge Sort with recursion (renamed)
 ;;; ------------------------------
-
 (defun my-merge (left right)
   "Merges two sorted lists into one sorted list (descending order)."
   (cond
