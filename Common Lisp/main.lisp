@@ -29,20 +29,18 @@
 (run-part1)
 
 ;;; ------------------------------
-;;; Part II: Merge Sort with recursion (advanced)
+;;; Part II: Merge Sort with recursion (renamed)
 ;;; ------------------------------
 
-;;; This is a divide-and-conquer sorting algorithm using recursion.
-
-(defun merge (left right)
+(defun my-merge (left right)
   "Merges two sorted lists into one sorted list (descending order)."
   (cond
     ((null left) right)
     ((null right) left)
     ((>= (first left) (first right))
-     (cons (first left) (merge (rest left) right)))
+     (cons (first left) (my-merge (rest left) right)))
     (t
-     (cons (first right) (merge left (rest right))))))
+     (cons (first right) (my-merge left (rest right))))))
 
 (defun merge-sort (lst)
   "Recursively sorts the list in descending order using merge sort."
@@ -51,7 +49,7 @@
       (let* ((mid (floor (/ (length lst) 2)))
              (left (subseq lst 0 mid))
              (right (subseq lst mid)))
-        (merge (merge-sort left) (merge-sort right)))))
+        (my-merge (merge-sort left) (merge-sort right)))))
 
 (defun run-part2 ()
   (let ((lst (adjust-odds (generate-list))))
