@@ -1,8 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <thread>
-#include <chrono>
 #include <ctime>
 #include <map>
 
@@ -63,11 +61,24 @@ public:
     string type() override { return "Sailboat"; }
 };
 
+// ---------------- Captain ----------------
+class Captain {
+    string first_name, last_name, license;
+public:
+    Captain(string fn, string ln, string lic) : first_name(fn), last_name(ln), license(lic) {}
+
+    void command(const shared_ptr<WaterVehicle>& vehicle) {
+        cout << "Captain " << first_name << " " << last_name
+             << " (licensed for: " << license << ") is commanding the " << vehicle->type()
+             << " \"" << vehicle->get_name() << "\".\n";
+    }
+};
+
 // ---------------- Logger and timer ----------------
 class Port {
     bool busy = false;
     vector<string> logs;
-    map<string, int> visit_duration; // vehicle name -> seconds
+    map<string, int> visit_duration;
     vector<shared_ptr<WaterVehicle>> history;
 
 public:
@@ -87,7 +98,9 @@ public:
         v->load();
         log_event("Accepted " + v->type() + ": " + v->get_name());
         history.push_back(v);
-        visit_duration[v->get_name()] = simulate_docking();
+        int duration = simulate_docking();
+        cout << "(Simulated docking time: " << duration << "s)\n";
+        visit_duration[v->get_name()] = duration;
         busy = false;
     }
 
@@ -104,9 +117,7 @@ public:
     }
 
     int simulate_docking() {
-        int seconds = rand() % 5 + 2;
-        this_thread::sleep_for(chrono::seconds(seconds));
-        return seconds;
+        return rand() % 2 + 1;  // 1–2 seconds (simulated)
     }
 
     void show_log() {
@@ -139,15 +150,23 @@ int main() {
     auto sub = make_shared<Submarine>("Kraken", 2015, 900);
     auto sailboat = make_shared<Sailboat>("Zephyr", 2021, 100);
 
+    // Captains for each vehicle
+    Captain cap1("John", "Ocean", "Ship");
+    Captain cap2("Ella", "Deep", "Submarine");
+    Captain cap3("Max", "Wind", "Sailboat");
+
     Port port;
 
+    cap1.command(ship);
     port.accept(ship);
     port.release(ship);
 
+    cap2.command(sub);
     port.accept(sub);
-    dynamic_pointer_cast<Submarine>(sub)->emergency_departure(); // Bonus method
+    sub->emergency_departure();
     port.release(sub);
 
+    cap3.command(sailboat);
     port.accept(sailboat);
     port.release(sailboat);
 
