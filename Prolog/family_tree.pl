@@ -1,4 +1,4 @@
-/* Prolog Family Tree - ~20 people with rules */
+/* Prolog Family Tree - ~20 people with rules and queries */
 
 % ----- Facts -----
 
@@ -43,36 +43,51 @@ parent(nick, julia).
 
 % ----- Rules -----
 
-% X is the father of Y
 father(X, Y) :- male(X), parent(X, Y).
-
-% X is the mother of Y
 mother(X, Y) :- female(X), parent(X, Y).
-
-% X is a grandparent of Y
 grandparent(X, Y) :- parent(X, Z), parent(Z, Y).
-
-% X and Y are siblings
 sibling(X, Y) :- parent(Z, X), parent(Z, Y), X \= Y.
+cousin(X, Y) :- parent(A, X), parent(B, Y), sibling(A, B), X \= Y.
+uncle(X, Y) :- male(X), sibling(X, Z), parent(Z, Y).
+aunt(X, Y) :- female(X), sibling(X, Z), parent(Z, Y).
 
-% X is a cousin of Y
-cousin(X, Y) :-
-    parent(A, X), parent(B, Y),
-    sibling(A, B), X \= Y.
+% ----- Test Queries with Output -----
 
-% X is an uncle of Y
-uncle(X, Y) :-
-    male(X), sibling(X, Z), parent(Z, Y).
+show_father(X) :-
+    father(X, Y),
+    format("~w is the father of ~w~n", [X, Y]).
 
-% X is an aunt of Y
-aunt(X, Y) :-
-    female(X), sibling(X, Z), parent(Z, Y).
+show_mother(X) :-
+    mother(X, Y),
+    format("~w is the mother of ~w~n", [X, Y]).
 
-% ----- Sample Queries -----
-% ?- father(john, michael).
-% ?- mother(linda, paul).
-% ?- grandparent(john, robert).
-% ?- sibling(paul, anna).
-% ?- cousin(chris, emily).
-% ?- uncle(michael, elizabeth).
-% ?- aunt(linda, anna).
+show_grandparent(X) :-
+    grandparent(X, Y),
+    format("~w is the grandparent of ~w~n", [X, Y]).
+
+show_sibling(X) :-
+    sibling(X, Y),
+    format("~w and ~w are siblings~n", [X, Y]).
+
+show_cousins(X) :-
+    cousin(X, Y),
+    format("~w and ~w are cousins~n", [X, Y]).
+
+show_uncle(X) :-
+    uncle(X, Y),
+    format("~w is the uncle of ~w~n", [X, Y]).
+
+show_aunt(X) :-
+    aunt(X, Y),
+    format("~w is the aunt of ~w~n", [X, Y]).
+    
+:- initialization(run).
+
+run :-
+    show_father(john),
+    show_mother(mary),
+    show_grandparent(john),
+    show_sibling(paul),
+    show_cousins(chris),
+    show_uncle(michael),
+    show_aunt(linda).
